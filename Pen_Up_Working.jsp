@@ -6,7 +6,20 @@
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.DriverManager"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"
+    import="com.mongodb.DB"
+    import="com.mongodb.DBCollection"
+    import="com.mongodb.DBCursor"
+    import="com.mongodb.ServerAddress"
+    import="com.mongodb.DBObject"
+    import="com.mongodb.BasicDBObject"
+    import="com.mongodb.WriteConcern"
+    import="com.mongodb.Mongo"
+    import="com.mongodb.MongoException"
+    import="java.util.Arrays"
+    import="java.util.*"
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,6 +37,25 @@
         String country=request.getParameter("country_selection_penUp");
         String password=request.getParameter("password_field_penUp");
         
+        
+        // --------------------------------------------------------------------------------------------------------------------------
+        // This code is for the Mongodb 
+        Mongo mg = new Mongo("Localhost",27017);
+        DB db = mg.getDB("Serve_me_database");
+        DBCollection collection = db.getCollection("User_Pen_Up_Data");
+        BasicDBObject doc = new BasicDBObject();
+        doc = new BasicDBObject();
+        doc.append("First_Name",request.getParameter("first_name_field_penUp"));
+        doc.append("Last_Name",request.getParameter("last_name_field_penUp"));
+        doc.append("User_Name",request.getParameter("user_name_field_penUp"));
+        Date cdate=new Date();
+        doc.append("User_Pen_Ip_At:",cdate);
+        collection.insert(doc);
+        mg.close();
+        // --------------------------------------------------------------------------------------------------------------------------
+        
+        // --------------------------------------------------------------------------------------------------------------------------
+        // This code is for MySQL
         try{
             Class.forName("com.mysql.jdbc.Driver");
             Connection con=DriverManager.getConnection("jdbc:mysql://localhost/serve_me","root","");
@@ -36,6 +68,7 @@
         }catch (Exception e){
         out.println(e);
         }
+         // --------------------------------------------------------------------------------------------------------------------------
         %>
         
     </body>
